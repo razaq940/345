@@ -25,6 +25,8 @@ namespace DAL.Models
         public virtual DbSet<RoleBase> RoleBases { get; set; }
         public virtual DbSet<OTP> OPTs { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<DescriptionProduct> DescriptionProducts { get; set; }
+        public virtual DbSet<CategoryProduct> CategoryProducts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -82,6 +84,18 @@ namespace DAL.Models
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PriceBuy)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PriceSell)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FkStore)
+                    .IsRequired()
                     .IsUnicode(false);
 
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
@@ -172,7 +186,44 @@ namespace DAL.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+
+
                 
+            });
+
+            modelBuilder.Entity<DescriptionProduct>(entity =>
+            {
+                entity.ToTable("DescriptionProduct");
+                entity.Property(e => e.NameDescription)
+                    .HasMaxLength(255)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DescriptionDetail)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProductId)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+
+            });
+
+            modelBuilder.Entity<CategoryProduct>(entity =>
+            {
+                entity.ToTable("CategoryProduct");
+                entity.Property(e => e.CategoryCode)
+                    .HasMaxLength(20)
+                    .IsRequired()
+                    .IsUnicode(false);
+                entity.Property(e => e.Category)
+                    .HasMaxLength(100)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+
+
             });
 
             modelBuilder.Entity<OTP>(entity =>

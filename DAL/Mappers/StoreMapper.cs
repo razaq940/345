@@ -17,6 +17,8 @@ namespace DAL.Mappers
             CreateMap<CreateStoreDto, Store>();
             CreateMap<Store, StoreDetailAdminDto>();
             CreateMap<Store, StoreDetailToCustomerDto>();
+            CreateMap<Store, UpdateStoreDto>();
+            
         }
     }
 }

@@ -18,7 +18,7 @@ namespace StoreApi.Controllers
     public class StoreController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly StoreServices _store ;
+        private readonly StoreServices _store;
 
         public StoreController(IMapper mapper, StoreServices store)
         {
@@ -26,12 +26,89 @@ namespace StoreApi.Controllers
             _store = store;
         }
 
+        [Authorize]
+        [HttpPut("[action]")]
+        public ActionResult UpdateStore(UpdateStoreDto data)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                long userId = long.Parse(identity.FindFirst("userId").Value);
+                var result = _store.UpdateStore(data, userId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item3
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    StoreId = result.Item2,
+                    Message = result.Item3
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 500,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetStoreDetail(long id)
+        {
+            try
+            {
+                var result = _store.GetStoreDetailToCustomer(id);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item3
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Store = result.Item2,
+                    Message = result.Item3
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
         [HttpGet("ListStoreToCustomer")]
         public ActionResult GetListStoreToCustomer()
         {
             try
             {
-                var result = _store.GetStoreDetailToCustomer();
+                var result = _store.GetAllStoreDetailToCustomer();
                 if (result.Item1 == -1)
                 {
                     return BadRequest(new

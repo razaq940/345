@@ -13,8 +13,8 @@ namespace DAL.Models
         public int Stock { get; set; }
         public long PriceBuy { get; set; }
         public long PriceSell { get; set; }
-        public long FkCategory { get; set; }
         public long FkStore { get; set; }
+        public long? FkCategory { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
