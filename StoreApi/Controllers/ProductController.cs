@@ -26,6 +26,45 @@ namespace StoreApi.Controllers
             _product = product;
         }
 
+
+        [Authorize(Roles = "Admin Store")]
+        [HttpPost("multiple-files")]
+        public ActionResult AddImageProduct(List<IFormFile> data, long ProductId)
+        {
+            try
+            {
+                var result = _product.AddImageProduct(data, ProductId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item2
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Message = result.Item2
+                });
+
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
         [Authorize(Roles = "Admin Store")]
         [HttpPost]
         public ActionResult CreateProduct(ProductCreateDto data)

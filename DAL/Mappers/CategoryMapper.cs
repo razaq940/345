@@ -14,6 +14,7 @@ namespace DAL.Mappers
         public CategoryMapper()
         {
             CreateMap<CategoryProductCreateDto, CategoryProduct>();
+            CreateMap<CategoryProduct, CategoryProductCreateDto>();
         }
     }
 

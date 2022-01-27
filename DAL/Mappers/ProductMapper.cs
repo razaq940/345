@@ -15,7 +15,7 @@ namespace DAL.Mappers
         {
             CreateMap<Product, ProductCreateDto>();
             CreateMap<ProductCreateDto, Product>();
-           
+            
         }
     }
 }

@@ -14,6 +14,7 @@ namespace DAL.Mappers
         public DescriptionProductMapper()
         {
             CreateMap<DescriptionProductCreateDto, DescriptionProduct>();
+            CreateMap<DescriptionProduct, DescriptionProductCreateDto>();
         }
     }
 }

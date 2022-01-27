@@ -10,6 +10,7 @@ namespace DAL.Models
     {
         public StoreDbContext()
         {
+
         }
 
         public StoreDbContext(DbContextOptions<StoreDbContext> options)
@@ -19,11 +20,15 @@ namespace DAL.Models
 
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Store> Stores { get; set; }
-        public virtual DbSet<Tansaction> Tansactions { get; set; }
+        public virtual DbSet<Transaction> Tansactions { get; set; }
         public virtual DbSet<TransactionType> TransactionTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<RoleBase> RoleBases { get; set; }
         public virtual DbSet<OTP> OPTs { get; set; }
+        public virtual DbSet<ImageProduct> ImageProducts { get; set; }
+        public virtual DbSet<PaymentType> PaymentTypes { get; set; }
+        public virtual DbSet<StatusTransaction> StatusTransactions { get; set; }
+        public virtual DbSet<Chart> Charts { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<DescriptionProduct> DescriptionProducts { get; set; }
         public virtual DbSet<CategoryProduct> CategoryProducts { get; set; }
@@ -32,7 +37,6 @@ namespace DAL.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-
                 optionsBuilder.UseSqlServer("Data Source= (localdb)\\MSSQLLocalDB;Initial Catalog=StoreDb;Integrated Security = True");
             }
         }
@@ -122,25 +126,50 @@ namespace DAL.Models
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<Tansaction>(entity =>
+            modelBuilder.Entity<Chart>(entity =>
             {
-                entity.ToTable("Tansaction");
+                entity.ToTable("Chart");
+
+                entity.Property(e => e.IsActive).HasDefaultValueSql("(('true'))");
+
+            });
+
+            modelBuilder.Entity<ImageProduct>(entity =>
+            {
+                entity.ToTable("ImageProduct");
+
+                entity.Property(e => e.ImageName)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ImageUrl)
+                    .IsRequired();
+                    
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.ToTable("Transaction");
 
                 entity.Property(e => e.TransactionCode)
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<TransactionType>(entity =>
             {
                 entity.ToTable("TransactionType");
 
-                entity.Property(e => e.Code)
+                entity.Property(e => e.CodeTransactionType)
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.NameTransactionType)
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
@@ -191,6 +220,31 @@ namespace DAL.Models
                 
             });
 
+            modelBuilder.Entity<StatusTransaction>(entity =>
+            {
+                entity.ToTable("StatusTransaction");
+
+                entity.Property(e => e.CodeStatusTransaction)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+
+                entity.Property(e => e.NameStatusTransaction)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<PaymentType>(entity =>
+            {
+                entity.ToTable("PaymenType");
+
+                entity.Property(e => e.CodePaymentType)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+                entity.Property(e => e.NamePaymentType)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            });
+
             modelBuilder.Entity<DescriptionProduct>(entity =>
             {
                 entity.ToTable("DescriptionProduct");
@@ -203,9 +257,7 @@ namespace DAL.Models
                     .IsRequired()
                     .IsUnicode(false);
 
-                entity.Property(e => e.ProductId)
-                    .IsRequired()
-                    .IsUnicode(false);
+                
 
 
             });

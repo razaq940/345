@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace BLL.Services
 {
@@ -16,6 +17,39 @@ namespace BLL.Services
         public ProductService(IMapper mapper)
         {
             _mapper = mapper;
+        }
+
+        public Tuple<int, string> AddImageProduct(List<IFormFile> data, long productId)
+        {
+            using (var _context = new StoreDbContext())
+            {
+                try
+                {
+                    foreach (var imgobj in data)
+                    {
+                        var guid = Guid.NewGuid();
+                        var filePath = Path.Combine("wwwroot", imgobj.Name + "_" + imgobj.FileName + guid + ".jpg");
+                        if (imgobj != null)
+                        {
+                            var fileStream = new FileStream(filePath, FileMode.Create);
+                            imgobj.CopyTo(fileStream);
+                        }
+                        var image = new ImageProduct
+                        {
+                            ImageName = imgobj.FileName,
+                            ImageUrl = filePath.Remove(0, 7),
+                            FkProduct = productId
+                        };
+                        _context.ImageProducts.Add(image);
+                        _context.SaveChanges();
+                    }
+                    return Tuple.Create(1, "Succes Add " + data.Count() + " Image To Product");
+                }
+                catch (Exception Ex)
+                {
+                    return Tuple.Create(-1, Ex.Message);
+                }
+            }
         }
 
         public Tuple<int, string> CreateProduct(long categoryId,Product prdckObj, long userId, DescriptionProduct dscObj, CategoryProduct catobj)
