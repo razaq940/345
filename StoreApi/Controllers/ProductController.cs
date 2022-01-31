@@ -27,6 +27,87 @@ namespace StoreApi.Controllers
         }
 
 
+        [Authorize]
+        [HttpGet("[action]")]
+        public ActionResult GetDetailProductAdmin(long productId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = long.Parse(identity.FindFirst("userId").Value);
+            try
+            {
+                var result = _product.DetailProductToAdmin(productId, userId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item3
+                    });
+
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    product = result.Item2,
+                    Message = result.Item3
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+
+        }
+
+        //GetAll List Store Product 
+        [HttpGet]
+        public ActionResult GetStoreProduct(long storeId)
+        {
+            try
+            {
+                var result = _product.GetAllProductStore(storeId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item4
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Products = result.Item3,
+                    Message = result.Item4
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
+
         [Authorize(Roles = "Admin Store")]
         [HttpPost("multiple-files")]
         public ActionResult AddImageProduct(List<IFormFile> data, long ProductId)

@@ -39,6 +39,7 @@ namespace StoreApi
             services.AddScoped<UserServices>();
             services.AddScoped<StoreServices>();
             services.AddScoped<ProductService>();
+            services.AddScoped<ChartServices>();
             //inject Db Context
             services.AddDbContext<StoreDbContext>();
 
