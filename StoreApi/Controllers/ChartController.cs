@@ -26,6 +26,162 @@ namespace StoreApi.Controllers
             _chart = chart;
         }
 
+        [HttpDelete("[action]")]
+        [Authorize]
+        public ActionResult RemoveAllChart()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = long.Parse(identity.FindFirst("userId").Value);
+            try
+            {
+                var result = _chart.RemoveAllChart(userId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Erroor = true,
+                        Message = result.Item2
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Message = result.Item2
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 500,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
+        [HttpDelete("[action]")]
+        [Authorize]
+        public ActionResult RemoveProductChart(long productId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = long.Parse(identity.FindFirst("userId").Value);
+            try
+            {
+                var result = _chart.removeProductChart(productId, userId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item2
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Message = result.Item2
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 500,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
+        [HttpPost("[action]")]
+        [Authorize]
+        public ActionResult LessQuantityProductChart(long productId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = long.Parse(identity.FindFirst("userId").Value);
+            try
+            {
+                var result = _chart.LessQuantityProductChart(productId, userId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item2
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Message = result.Item2
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 500,
+                    Headers = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
+        [HttpPost("[action]")]
+        [Authorize]
+        public ActionResult AddProductQuantityChart(long productId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = long.Parse(identity.FindFirst("userId").Value);
+            try
+            {
+                var result = _chart.AddQuantityProductChart(productId, userId);
+                if (result.Item1 == -1)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Headers = Response.Headers,
+                        Error = true,
+                        Message = result.Item2
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Headers = Response.Headers,
+                    Error = false,
+                    Message = result.Item2
+                });
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 500,
+                    Headres = Response.Headers,
+                    Error = true,
+                    Message = Ex.Message
+                });
+            }
+        }
+
         [HttpGet("[action]")]
         [Authorize]
         public ActionResult GetChart()
